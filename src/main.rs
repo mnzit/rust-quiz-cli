@@ -1,20 +1,23 @@
 use crate::readable::readable::{FileReader, Readable};
 use crate::prompt::simple_user_input::get_input;
-
+use rand::thread_rng;
+use rand::seq::SliceRandom;
 mod readable;
 mod prompt;
 
 fn main() {
-    let data_list = &FileReader {}.read(String::from("data.txt"));
+    let data_list: Vec<String> = FileReader {}.read(String::from("data.txt"));
     begin_quiz(data_list);
 }
 
-fn begin_quiz(data_list: &Vec<String>) {
+fn begin_quiz(mut data_list: Vec<String>) {
     println!("{}", "Welcome to Quiz");
     let mut exit = false;
     let mut score = 0;
     loop {
+        let slice = data_list.as_mut_slice();
         let has_begin = get_input("Press (B) begin to (Q) quit the game.");
+        slice.shuffle(&mut thread_rng());
         if has_begin.eq("B") {
             for (_pos, data) in data_list.iter().enumerate() {
                 println!("{}", "Press [1][2][3][4] to answer or press [Q] to quit.");
@@ -54,7 +57,6 @@ fn begin_quiz(data_list: &Vec<String>) {
             }
             println!("{}","------------------------------------------------------------------------------------------------");
             println!("Your Score is {}/{}", score, data_list.len());
-            println!("{}", "Thank you for entering in our game!!");
             println!("{}","------------------------------------------------------------------------------------------------");
         }  else if has_begin.eq("Q") {
             println!("{}", "Thank you for entering in our game!!");
